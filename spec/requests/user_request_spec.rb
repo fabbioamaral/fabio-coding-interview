@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-
   RSpec.shared_context 'with multiple companies' do
     let!(:company_1) { create(:company) }
     let!(:company_2) { create(:company) }
@@ -35,6 +34,21 @@ RSpec.describe "Users", type: :request do
 
       it 'returns all the users' do
 
+      end
+    end
+
+    context 'when fetching by username' do
+      let!(:company_1) { create(:company) }
+      let!(:user_1) {create(:user, username: 'user_1_1')}
+      let!(:user_2) {create(:user, username: 'user_1_2')}
+      let!(:user_3) {create(:user, username: 'user_3')}
+
+      it 'returns all users that partially matches with the username param' do
+        get users_path(username: 'user_1')
+
+        expect(result.first['username']).to eq(user_1.username)
+        expect(result.last['username']).to eq(user_2.username)
+        expect(result.size).to eq(2)
       end
     end
   end
